@@ -18,15 +18,19 @@ module Jasmine
 
       private
       def run_rake_task
-        case Jasmine::Headless::Runner.run(
+        case result = Jasmine::Headless::Runner.run(
           :colors => colors,
           :remove_html_file => !@keep_on_error,
           :jasmine_config => @jasmine_config
         )
+        when 0
+          true
         when 1
           raise Jasmine::Headless::TestFailure
         when 2
           raise Jasmine::Headless::ConsoleLogUsage
+        else
+          raise "Unexpected result code: #{result}"
         end
       end
     end

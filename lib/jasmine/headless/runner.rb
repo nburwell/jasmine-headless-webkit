@@ -144,6 +144,14 @@ module Jasmine
       end
 
       def initialize(options)
+        if !File.file?(RUNNER)
+          $stderr.puts "No runner found, attempting to compile..."
+          Dir.chdir RUNNER_DIR do
+            system %{ruby extconf.rb}
+          end
+          raise NoRunnerError if !File.file?(RUNNER)
+        end
+
         options = Options.new(options) if !options.kind_of?(Options)
 
         @options = options
